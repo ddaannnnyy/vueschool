@@ -13,42 +13,52 @@ describe('WorldBoard', () => {
     await guessInput.setValue(guess)
     await guessInput.trigger('keydown.enter')
   }
-  test('a victory message appears when the user makes a guess that matches the word of the day', async () => {
-    await playerSubmitsGuess(wordOfTheDay)
+  describe('End of game messages', () => {
+    test('a victory message appears when the user makes a guess that matches the word of the day', async () => {
+      await playerSubmitsGuess(wordOfTheDay)
 
-    expect(wrapper.text()).toContain(VICTORY_MESSAGE)
-  })
-  test('a defeat message appears if the user makes a guess that is incorrect', async () => {
-    await playerSubmitsGuess('WRONG')
+      expect(wrapper.text()).toContain(VICTORY_MESSAGE)
+    })
+    test('a defeat message appears if the user makes a guess that is incorrect', async () => {
+      await playerSubmitsGuess('WRONG')
 
-    expect(wrapper.text()).toContain(DEFEAT_MESSAGE)
+      expect(wrapper.text()).toContain(DEFEAT_MESSAGE)
+    })
+    test('no end-of-game message appears if the user has not yet made a guess', async () => {
+      expect(wrapper.text()).not.toContain(VICTORY_MESSAGE)
+      expect(wrapper.text()).not.toContain(DEFEAT_MESSAGE)
+    })
   })
-  test('no end-of-game message appears if the user has not yet made a guess', async () => {
-    expect(wrapper.text()).not.toContain(VICTORY_MESSAGE)
-    expect(wrapper.text()).not.toContain(DEFEAT_MESSAGE)
-  })
-  test('if a word of the day is provided and does not have 5 characters, display a warning', async () => {
-    // const spy = vi.spyOn(console, 'warn')
-    // spy.mockImplementation(() => null)
-    // alternative syntax vvv
-    console.warn = vi.fn()
-    mount(WordleBoard, { props: { wordOfTheDay: 'FLY' } })
+  describe('rules for defining word of the day', () => {
+    test('if a word of the day is provided and does not have 5 characters, display a warning', async () => {
+      // const spy = vi.spyOn(console, 'warn')
+      // spy.mockImplementation(() => null)
+      // alternative syntax vvv
+      console.warn = vi.fn()
+      mount(WordleBoard, { props: { wordOfTheDay: 'FLY' } })
 
-    expect(console.warn).toHaveBeenCalled()
+      expect(console.warn).toHaveBeenCalled()
+    })
+    test('if word of the day is not in uppercase a warning is emitted', async () => {
+      console.warn = vi.fn()
+      mount(WordleBoard, { props: { wordOfTheDay: 'hello' } })
+      expect(console.warn).toHaveBeenCalled()
+    })
+    test('if word of the day is not a real word a warning is emitted', async () => {
+      console.warn = vi.fn()
+      mount(WordleBoard, { props: { wordOfTheDay: 'QWERT' } })
+      expect(console.warn).toHaveBeenCalled()
+    })
+    test('no warning is needed if word provided is valid', async () => {
+      console.warn = vi.fn()
+      mount(WordleBoard, { props: { wordOfTheDay: 'TESTS' } })
+      expect(console.warn).not.toHaveBeenCalled()
+    })
   })
-  test('if word of the day is not in uppercase a warning is emitted', async () => {
-    console.warn = vi.fn()
-    mount(WordleBoard, { props: { wordOfTheDay: 'hello' } })
-    expect(console.warn).toHaveBeenCalled()
-  })
-  test('if word of the day is not a real word a warning is emitted', async () => {
-    console.warn = vi.fn()
-    mount(WordleBoard, { props: { wordOfTheDay: 'QWERT' } })
-    expect(console.warn).toHaveBeenCalled()
-  })
-  test('no warning is needed if word provided is valid', async () => {
-    console.warn = vi.fn()
-    mount(WordleBoard, { props: { wordOfTheDay: 'TESTS' } })
-    expect(console.warn).not.toHaveBeenCalled()
+  describe('player inputs', () => {
+    test.todo('player guesses are limited to 5 letters')
+    test.todo('player guesses can only be submitted if they are real words')
+    test.todo('player guesses are not case-sensitive')
+    test.todo('player guesses can only contain letters')
   })
 })
