@@ -42,16 +42,6 @@ describe('WorldBoard', () => {
         expect(console.warn).toHaveBeenCalled()
       }
     )
-    test('if word of the day is not in uppercase a warning is emitted', async () => {
-      console.warn = vi.fn()
-      mount(WordleBoard, { props: { wordOfTheDay: 'hello' } })
-      expect(console.warn).toHaveBeenCalled()
-    })
-    test('if word of the day is not a real word a warning is emitted', async () => {
-      console.warn = vi.fn()
-      mount(WordleBoard, { props: { wordOfTheDay: 'QWERT' } })
-      expect(console.warn).toHaveBeenCalled()
-    })
     test('no warning is needed if word provided is valid', async () => {
       console.warn = vi.fn()
       mount(WordleBoard, { props: { wordOfTheDay: 'TESTS' } })
