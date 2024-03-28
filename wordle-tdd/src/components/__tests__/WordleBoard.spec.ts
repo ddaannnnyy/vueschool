@@ -30,15 +30,18 @@ describe('WorldBoard', () => {
     })
   })
   describe('rules for defining word of the day', () => {
-    test('if a word of the day is provided and does not have 5 characters, display a warning', async () => {
-      // const spy = vi.spyOn(console, 'warn')
-      // spy.mockImplementation(() => null)
-      // alternative syntax vvv
-      console.warn = vi.fn()
-      mount(WordleBoard, { props: { wordOfTheDay: 'FLY' } })
+    test.each(['FLY', 'hello', 'QWERT'])(
+      'if invalid word of the day is provided - this test is testing %s - display a warning',
+      async (wordOfTheDay) => {
+        // const spy = vi.spyOn(console, 'warn')
+        // spy.mockImplementation(() => null)
+        // alternative syntax vvv
+        console.warn = vi.fn()
+        mount(WordleBoard, { props: { wordOfTheDay } })
 
-      expect(console.warn).toHaveBeenCalled()
-    })
+        expect(console.warn).toHaveBeenCalled()
+      }
+    )
     test('if word of the day is not in uppercase a warning is emitted', async () => {
       console.warn = vi.fn()
       mount(WordleBoard, { props: { wordOfTheDay: 'hello' } })
