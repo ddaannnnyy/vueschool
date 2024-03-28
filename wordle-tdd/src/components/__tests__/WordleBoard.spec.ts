@@ -28,7 +28,10 @@ describe('WorldBoard', () => {
     expect(wrapper.text()).not.toContain(DEFEAT_MESSAGE)
   })
   test('if a word of the day is provided and does not have 5 characters, display a warning', async () => {
-    vi.spyOn(console, 'warn')
+    // const spy = vi.spyOn(console, 'warn')
+    // spy.mockImplementation(() => null)
+    // alternative syntax vvv
+    console.warn = vi.fn()
     mount(WordleBoard, { props: { wordOfTheDay: 'FLY' } })
 
     expect(console.warn).toHaveBeenCalled()
