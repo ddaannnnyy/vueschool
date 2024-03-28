@@ -30,18 +30,28 @@ describe('WorldBoard', () => {
     })
   })
   describe('rules for defining word of the day', () => {
-    test.each(['FLY', 'hello', 'QWERT'])(
-      'if invalid word of the day is provided - this test is testing %s - display a warning',
-      async (wordOfTheDay) => {
-        // const spy = vi.spyOn(console, 'warn')
-        // spy.mockImplementation(() => null)
-        // alternative syntax vvv
-        console.warn = vi.fn()
-        mount(WordleBoard, { props: { wordOfTheDay } })
-
-        expect(console.warn).toHaveBeenCalled()
+    test.each([
+      {
+        wordOfTheDay: 'FLY',
+        reason: 'word of the day must have 5 characters'
+      },
+      {
+        wordOfTheDay: 'hello',
+        reason: 'word of the day must be in uppercase'
+      },
+      {
+        wordOfTheDay: 'QWERT',
+        reason: 'word of the day must be valid english word'
       }
-    )
+    ])('Since $reason, $wordOfTheDay is invalid. Show warning', async ({ wordOfTheDay }) => {
+      // const spy = vi.spyOn(console, 'warn')
+      // spy.mockImplementation(() => null)
+      // alternative syntax vvv
+      console.warn = vi.fn()
+      mount(WordleBoard, { props: { wordOfTheDay } })
+
+      expect(console.warn).toHaveBeenCalled()
+    })
     test('no warning is needed if word provided is valid', async () => {
       console.warn = vi.fn()
       mount(WordleBoard, { props: { wordOfTheDay: 'TESTS' } })
