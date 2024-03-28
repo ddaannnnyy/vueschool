@@ -46,4 +46,9 @@ describe('WorldBoard', () => {
     mount(WordleBoard, { props: { wordOfTheDay: 'QWERT' } })
     expect(console.warn).toHaveBeenCalled()
   })
+  test('no warning is needed if word provided is valid', async () => {
+    console.warn = vi.fn()
+    mount(WordleBoard, { props: { wordOfTheDay: 'TESTS' } })
+    expect(console.warn).not.toHaveBeenCalled()
+  })
 })
