@@ -9,4 +9,5 @@ defineProps<{
   <p>{{ wordOfTheDay }}</p>
   <input type="text" name="" id="" />
   <p>{{ VICTORY_MESSAGE }}</p>
+  <p>Better luck next time</p>
 </template>
