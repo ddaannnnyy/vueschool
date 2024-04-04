@@ -35,7 +35,7 @@ describe('WorldBoard', () => {
     })
     test.each([
       {
-        wordOfTheDay: 'FLY',
+        wordOfTheDay: 'TEST',
         reason: 'word of the day must have 5 characters'
       },
       {
