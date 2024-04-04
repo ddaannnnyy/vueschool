@@ -75,7 +75,7 @@
         "./imports"
       ],
       "#app-manifest": [
-        "./manifest/meta/dev"
+        "./manifest/meta/dev.json"
       ],
       "#build": [
         "."
@@ -118,6 +118,7 @@
   ],
   "exclude": [
     "../node_modules",
+    "../../node_modules",
     "../node_modules/nuxt/node_modules",
     "../node_modules/@nuxtjs/tailwindcss/runtime/server",
     "../node_modules/@vueuse/nuxt/runtime/server",

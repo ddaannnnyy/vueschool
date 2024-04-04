@@ -5,19 +5,32 @@
       v-model="columns"
       group="columns"
       item-key="id"
+      :animation="150"
+      handle=".drag-handle"
     >
       <template #item="{ element: column }: { element: Column }">
-        <div class="column bg-gray-200 p-5 rounded min-w-[250px]">
+        <div
+          class="column bg-gray-200 p-5 rounded min-w-[250px] transition-all duration-150"
+        >
           <header class="font-bold mb-4">
+            <DragHandle />
             {{ column.title }}
           </header>
-          <TrelloBoardTask
-            v-for="task in column.tasks"
-            :key="task.id"
-            :task="task"
-          />
+          <draggable
+            :class="column.tasks.length > 0 ? '' : 'py-3'"
+            v-model="column.tasks"
+            :group="{ name: 'tasks', pull: alt ? 'clone' : true }"
+            item-key="id"
+            :animation="150"
+            handle=".drag-handle"
+          >
+            <template #item="{ element: task }: { element: Task }">
+              <div>
+                <TrelloBoardTask :task="task" /></div
+            ></template>
+          </draggable>
           <footer>
-            <button class="text-gray-500" @click="">+ Add a card</button>
+            <NewTask @add="column.tasks.push($event)" />
           </footer>
         </div>
       </template>
@@ -26,9 +39,10 @@
 </template>
 
 <script setup lang="ts">
-import type { Column } from "~/types/index";
+import type { Column, Task } from "~/types/index";
 import { nanoid } from "nanoid";
 import draggable from "vuedraggable";
+const alt = useKeyModifier("Alt");
 const columns = ref<Column[]>([
   {
     id: nanoid(),
