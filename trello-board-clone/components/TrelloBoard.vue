@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="flex items-start gap-4 overflow-x-auto">
     <draggable
-      class="flex gap-4 overflow-x-auto items-start"
+      class="flex gap-4 items-start"
       v-model="columns"
       group="columns"
       item-key="id"
@@ -14,7 +14,17 @@
         >
           <header class="font-bold mb-4">
             <DragHandle />
-            {{ column.title }}
+            <input
+              type="text"
+              class="title-input bg-transparent focus:bg-white rounded px-1 w-4/5"
+              @keyup.enter="($event.target as HTMLInputElement).blur()"
+              @keydown.backspace="
+                column.title === ''
+                  ? (columns = columns.filter((c) => c.id !== column.id))
+                  : null
+              "
+              v-model="column.title"
+            />
           </header>
           <draggable
             :class="column.tasks.length > 0 ? '' : 'py-3'"
@@ -26,7 +36,14 @@
           >
             <template #item="{ element: task }: { element: Task }">
               <div>
-                <TrelloBoardTask :task="task" /></div
+                <TrelloBoardTask
+                  :task="task"
+                  @delete="
+                    column.tasks = column.tasks.filter(
+                      (task) => task.id !== $event
+                    )
+                  "
+                /></div
             ></template>
           </draggable>
           <footer>
@@ -35,6 +52,12 @@
         </div>
       </template>
     </draggable>
+    <button
+      @click="createColumn"
+      class="bg-gray-200 whitespace-nowrap p-2 rounded opacity-50"
+    >
+      + Add Another Column
+    </button>
   </div>
 </template>
 
@@ -43,7 +66,7 @@ import type { Column, Task } from "~/types/index";
 import { nanoid } from "nanoid";
 import draggable from "vuedraggable";
 const alt = useKeyModifier("Alt");
-const columns = ref<Column[]>([
+const columns = useLocalStorage<Column[]>("trelloClone", [
   {
     id: nanoid(),
     title: "Backlog",
@@ -76,6 +99,32 @@ const columns = ref<Column[]>([
     tasks: [],
   },
 ]);
+// If we had a back end, we can sync the data like this
+watch(
+  columns,
+  () => {
+    // push data to api
+  },
+  {
+    deep: true, // required because columns is an array
+  }
+);
+
+function createColumn() {
+  const column: Column = {
+    id: nanoid(),
+    title: "",
+    tasks: [],
+  };
+  columns.value.push(column);
+  nextTick(() => {
+    (
+      document.querySelector(
+        ".column:last-of-type .title-input"
+      ) as HTMLInputElement
+    ).focus();
+  });
+}
 </script>
 
 <style scoped></style>

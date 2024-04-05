@@ -1,18 +1,30 @@
 <template>
   <div
     class="task bg-white p-2 mb-2 rounded shadow-sm max-w-[250px] flex"
-    :title="props.task.createdAt.toLocaleDateString()"
+    :title="new Date(task.createdAt).toLocaleDateString()"
+    @focus="focused = true"
+    @blur="focused = false"
+    tabindex="0"
   >
     <DragHandle class="mr-2" />
-    <span>{{ props.task.title }}</span>
+    <span class="pr-4">{{ props.task.title }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Task } from "~/types/index";
+import type { Task, ID } from "~/types/index";
 const props = defineProps<{
   task: Task;
 }>();
+const emit = defineEmits<{
+  (e: "delete", payload: ID): void;
+}>();
+const focused = ref(false);
+onKeyStroke("Backspace", (e) => {
+  if (focused.value) {
+    emit("delete", props.task.id);
+  }
+});
 </script>
 
 <style scoped>
@@ -25,5 +37,10 @@ const props = defineProps<{
 .sortable-ghost .task::after {
   content: "";
   @apply absolute top-0 left-0 right-0 bottom-0 bg-slate-300 rounded;
+}
+.task:focus,
+.task:focus-visible {
+  @apply outline-gray-400 !important;
+  outline: gray auto 1px;
 }
 </style>
